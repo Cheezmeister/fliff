@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cmath>
 #include <cstdlib>
 #include <stdint.h>
 
@@ -26,8 +27,8 @@ namespace bml
 {
 static std::ostream& logger = std::cout;
 typedef struct _Vec {
-  float x;
-  float y;
+    float x;
+    float y;
 } Vec;
 
 
@@ -38,6 +39,11 @@ const Vec UNIT_Y = { 0, 1 };
 static float cross(const Vec& lhs, const Vec& rhs)
 {
     return lhs.x * rhs.y - rhs.x * lhs.y;
+}
+
+static float length(const Vec& vec)
+{
+    return sqrt(vec.x*vec.x + vec.y*vec.y);
 }
 
 static void negate(Vec& vec)
@@ -139,7 +145,7 @@ typedef struct _Input {
         bool prime;
         bool aux;
     } action;
-    
+
 } Input;
 
 typedef struct _Entity {
@@ -152,6 +158,7 @@ typedef struct _Entity {
 
 /// --- ///
 const int MAX_CAPSULES = 3;
+const int MAX_NUGGETS = 12;
 
 typedef unsigned long Fliff;
 
@@ -162,6 +169,10 @@ typedef struct _Player : public Entity {
     Fliff fliff;
     int mode;
 } Player;
+
+typedef struct _FliffNugget : public Entity {
+    Fliff amount;
+} FliffNugget;
 
 typedef struct _FliffCapsule : public Entity {
     Fliff cost;
@@ -181,18 +192,19 @@ typedef struct _GameState {
 
     Player player;
     FliffCapsule capsules[MAX_CAPSULES];
+    FliffNugget nuggets[MAX_NUGGETS];
 
 } GameState;
 
 namespace gfx
 {
-  void init();
-  void render(GameState& state, u32 ticks);
-  void resize(int width, int height);
+void init();
+void render(GameState& state, u32 ticks);
+void resize(int width, int height);
 }
 
 namespace game
 {
-  void init();
-  void update(GameState& state, const Input& input);
+void init();
+void update(GameState& state, const Input& input);
 }

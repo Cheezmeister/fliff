@@ -18,8 +18,8 @@ typedef struct _Args {
 } Args;
 
 typedef struct _Dimension2 {
-  float x;
-  float y;
+    float x;
+    float y;
 } Dimension2;
 
 
