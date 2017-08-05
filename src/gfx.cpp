@@ -121,8 +121,8 @@ namespace gfx
     // Nasty globals
     GLuint vbo;
     VBO reticle_vbo;
-    GLuint shader;
-    GLuint reticle_shader;
+    /* GLuint shader; */
+    /* GLuint reticle_shader; */
 
     // We make the assumption that the screen starts off square.
     // Actual pixel counts don't matter, only the aspect ratio
@@ -297,7 +297,7 @@ namespace gfx
 
         // Init shaders
         renderstate.shaders.player = make_shader(vs_affine, fs_dot);
-        reticle_shader = make_shader(vs_noop, fs_dot);
+        /* reticle_shader = make_shader(vs_noop, fs_dot); */
 
         // Misc setup
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -315,24 +315,9 @@ namespace gfx
         set_uniform(renderstate.shaders.player, "aspect", renderstate.viewport.aspect);
         set_uniform(renderstate.shaders.player, "offset", state.player.pos);
         set_uniform(renderstate.shaders.player, "rotation", state.player.rotation);
-        /* set_uniform(renderstate.shaders.player, "ticks", ticks); */
-        /* set_uniform(renderstate.shaders.player, "green", state.player.mode * 0.25); */
         set_uniform(renderstate.shaders.player, "scale", 10);
         draw_array(reticle_vbo, GL_QUADS);
 
-        /* // Render reticle, drawing from VBO struct */
-        /* glUseProgram(reticle_shader); check_error("binding shader"); */
-        /* set_uniform(reticle_shader, "aspect", renderstate.viewport.aspect); */
-        /* set_uniform(reticle_shader, "offset", state.reticle.pos); */
-        /* set_uniform(reticle_shader, "rotation", ticks / 1000.0f); */
-        /* set_uniform(reticle_shader, "scale", state.reticle.scale); */
-        /* draw_array(reticle_vbo, GL_QUADS); */
-
-        // Draw centered 1-unit square, reusing reticle vertices
-        /* set_uniform(reticle_shader, "offset", 0, 0); */
-        /* set_uniform(reticle_shader, "scale", 5); */
-        /* set_uniform(reticle_shader, "rotation", 0); */
-        /* draw_array(reticle_vbo, GL_QUADS); */
     }
 }
 

@@ -142,16 +142,34 @@ typedef struct _Input {
     
 } Input;
 
+typedef struct _Entity {
+    bml::Vec pos;
+    bml::Vec vel;
+    bool active;
+} Entity;
+
+
+
+/// --- ///
+const int MAX_CAPSULES = 3;
+
+typedef unsigned long Fliff;
+
+
+typedef struct _Player : public Entity {
+    float rotation; // radians
+    float scale; // 0-2.0
+    Fliff fliff;
+    int mode;
+} Player;
+
+typedef struct _FliffCapsule : public Entity {
+    Fliff cost;
+    bool triggered;
+} FliffCapsule;
 
 typedef struct _GameState {
-    struct _Player {
-        bml::Vec pos;
-        bml::Vec vel;
-        float rotation; // radians
-        float scale; // 0-2.0
-        unsigned long fliff;
-        int mode;
-    } player;
+
     struct _Reticle {
         bml::Vec pos;
         float scale; // 0-2.0
@@ -160,6 +178,10 @@ typedef struct _GameState {
         float w;
         float h;
     } field;
+
+    Player player;
+    FliffCapsule capsules[MAX_CAPSULES];
+
 } GameState;
 
 namespace gfx

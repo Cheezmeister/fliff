@@ -9,6 +9,10 @@ struct _GameParams {
     float movespeed, rotspeed, drag, modecount, scalesize;
 } params = {   0.01,      0.1,  0.9,         5, 12 };
 
+typedef enum _Controller {
+  LATERAL,
+} Controller;
+
 void init()
 {
 }
@@ -19,6 +23,34 @@ void resize(GameState& state, const Input& input)
     state.field.h = input.sys.resize.h;
 }
 
+void control(Entity& entity, const Input& input, Controller c)
+{
+  switch (c)
+  {
+    // Movement with arrow keys/fake axis
+    case LATERAL:
+    float ythrust = params.movespeed * input.axes.y1;
+    float xthrust = params.movespeed * input.axes.x1;
+    entity.vel.x += xthrust;
+    entity.vel.y += ythrust;
+
+    entity.pos += entity.vel;
+    entity.vel.x *= params.drag;
+    entity.vel.y *= params.drag;
+    return;
+
+  }
+}
+
+void spawn_capsule(FliffCapsule& capsule)
+{
+    capsule.pos.x = -0.1;
+    capsule.pos.y = -0.1;
+    capsule.cost = 10;
+    capsule.active = true;
+    capsule.triggered = false;
+}
+
 void update(GameState& state, const Input& input)
 {
     if (input.sys.resized)
@@ -26,35 +58,9 @@ void update(GameState& state, const Input& input)
         resize(state, input);
     }
 
-    // Movement with arrow keys/fake axis
-    float ythrust = params.movespeed * input.axes.y1;
-    float xthrust = params.movespeed * input.axes.x1;
-    /* state.player.rotation -= params.rotspeed * input.axes.x1; */
-    state.player.vel.x += xthrust; // * cos(state.player.rotation);
-    state.player.vel.y += ythrust; // * sin(state.player.rotation);
+    control(state.player, input, LATERAL);
 
-    state.player.pos += state.player.vel;
-    state.player.vel.x *= params.drag;
-    state.player.vel.y *= params.drag;
-
-    // Aim with mouse
-    float aspect = state.field.w / state.field.h;
-    state.reticle.pos.x = input.axes.x2 * (aspect > 1 ? aspect : 1);
-    state.reticle.pos.y = input.axes.y2 / (aspect < 1 ? aspect : 1);
-
-    // Warp/drag with mouse
-    if (input.held.prime)
-        state.player.pos = state.reticle.pos;
-
-    // Scale with gamepad sticks
-    state.player.scale = input.axes.y3 + 1.0;
-    float y4 = input.axes.y4;
-    if (y4 > 0) y4 *= params.scalesize;
-    state.reticle.scale = y4 + 1.0;
-
-    // Cycle greenness with gamepad A or spacebar
-    if (input.action.prime)
-        (++state.player.mode) %= (int)params.modecount;
+    spawn_capsule(state.capsules[0]);
 
 }
 
