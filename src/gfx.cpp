@@ -100,15 +100,8 @@ typedef struct _RenderState {
   } viewport;
 	struct _Shaders {
     GLuint player;
-    /* GLuint square; */
-    /* GLuint reticle; */
+    GLuint capsule;
     GLuint meter;
-
-    /* GLuint enemy; */
-    /* GLuint turd; */
-    /* GLuint viewport; */
-    /* GLuint nova; */
-    /* GLuint xpchunk; */
 
     /* GLuint post_blur; */
     /* GLuint post_fade; */
@@ -119,8 +112,8 @@ namespace gfx
 {
 
     // Nasty globals
-    GLuint vbo;
-    VBO reticle_vbo;
+    VBO vbo_tri;
+    VBO vbo_quad;
     /* GLuint shader; */
     /* GLuint reticle_shader; */
 
@@ -223,38 +216,38 @@ namespace gfx
     // Player shader
     GLuint make_shader(GLuint vertex, GLuint fragment)
     {
-        GLuint unused = arcsynthesis::CreateShader(GL_VERTEX_SHADER,
-                        "#version 120  \n"
-                        "attribute vec4 inPos; \n"
-                        "uniform vec2 offset; \n"
-                        "uniform float rotation; \n"
-                        "uniform float ticks; \n"
-                        "uniform float scale; \n"
-                        "varying vec4 glPos; \n"
-                        "uniform float aspect = 1; \n"
-                        "void main() { \n"
-                        "  vec2 rotated;\n"
-                        "  rotated.x = inPos.x * cos(rotation) - inPos.y * sin(rotation);\n"
-                        "  rotated.y = inPos.x * sin(rotation) + inPos.y * cos(rotation);\n"
-                        "  vec2 pos = rotated * scale;\n"
-                        "  pos += offset; \n"
-                        "  pos.y *= aspect; \n"
-                        "  if (aspect > 1) pos /= aspect; \n"
-                        "  gl_Position = glPos = vec4(pos, 0, 1); \n"
-                        "} \n"
-        );
-        GLuint unused2 = arcsynthesis::CreateShader(GL_FRAGMENT_SHADER,
-                          "#version 120 \n"
-                          /* "out vec3 color; \n" */
-                          "varying vec4 glPos; \n"
-                          "uniform float green; \n"
-                          "void main() { \n"
-                          "  vec3 c = cross(vec3(1, 0, 0), vec3(glPos.x, glPos.y, 0)); \n"
-                          "  float r = length(c); \n"
-                          "  vec3 delta = glPos - inPos; \n"
-                          "  gl_FragColor = vec4(r,green,glPos.y,0); \n"
-                          "} \n"
-        );
+        /* GLuint unused = arcsynthesis::CreateShader(GL_VERTEX_SHADER, */
+        /*                 "#version 120  \n" */
+        /*                 "attribute vec4 inPos; \n" */
+        /*                 "uniform vec2 offset; \n" */
+        /*                 "uniform float rotation; \n" */
+        /*                 "uniform float ticks; \n" */
+        /*                 "uniform float scale; \n" */
+        /*                 "varying vec4 glPos; \n" */
+        /*                 "uniform float aspect = 1; \n" */
+        /*                 "void main() { \n" */
+        /*                 "  vec2 rotated;\n" */
+        /*                 "  rotated.x = inPos.x * cos(rotation) - inPos.y * sin(rotation);\n" */
+        /*                 "  rotated.y = inPos.x * sin(rotation) + inPos.y * cos(rotation);\n" */
+        /*                 "  vec2 pos = rotated * scale;\n" */
+        /*                 "  pos += offset; \n" */
+        /*                 "  pos.y *= aspect; \n" */
+        /*                 "  if (aspect > 1) pos /= aspect; \n" */
+        /*                 "  gl_Position = glPos = vec4(pos, 0, 1); \n" */
+        /*                 "} \n" */
+        /* ); */
+        /* GLuint unused2 = arcsynthesis::CreateShader(GL_FRAGMENT_SHADER, */
+        /*                   "#version 120 \n" */
+        /*                   /1* "out vec3 color; \n" *1/ */
+        /*                   "varying vec4 glPos; \n" */
+        /*                   "uniform float green; \n" */
+        /*                   "void main() { \n" */
+        /*                   "  vec3 c = cross(vec3(1, 0, 0), vec3(glPos.x, glPos.y, 0)); \n" */
+        /*                   "  float r = length(c); \n" */
+        /*                   "  vec3 delta = glPos - inPos; \n" */
+        /*                   "  gl_FragColor = vec4(r,green,glPos.y,0); \n" */
+        /*                   "} \n" */
+        /* ); */
         GLuint program = arcsynthesis::CreateProgram(vertex, fragment);
         return program;
     }
@@ -266,7 +259,7 @@ namespace gfx
             -0.75f, 0.75f, 0.0f, 1.0f,
             -0.75f, -0.75f, 0.0f, 1.0f,
         };
-        vbo = make_vbo(sizeof(vertexPositions), vertexPositions.flat);
+        vbo_tri = make_vbo(vertexPositions);
 
         // Set up square VBO
         VertexBuffer<4> reticleVertices = {
@@ -275,7 +268,7 @@ namespace gfx
             -0.1f, -0.1f, 0.0f, 1.0f,
             -0.1f,  0.1f, 0.0f, 1.0f,
         };
-        reticle_vbo = make_vbo(reticleVertices);
+        vbo_quad = make_vbo(reticleVertices);
 
         GLuint vs_noop = arcsynthesis::CreateShader(
             GL_VERTEX_SHADER, GLSL_VERSION
@@ -297,6 +290,7 @@ namespace gfx
 
         // Init shaders
         renderstate.shaders.player = make_shader(vs_affine, fs_dot);
+        renderstate.shaders.capsule = make_shader(vs_affine, fs_dot);
         /* reticle_shader = make_shader(vs_noop, fs_dot); */
 
         // Misc setup
@@ -316,7 +310,15 @@ namespace gfx
         set_uniform(renderstate.shaders.player, "offset", state.player.pos);
         set_uniform(renderstate.shaders.player, "rotation", state.player.rotation);
         set_uniform(renderstate.shaders.player, "scale", 10);
-        draw_array(reticle_vbo, GL_QUADS);
+        draw_array(vbo_quad, GL_QUADS);
+
+        FliffCapsule& c = state.capsules[0];
+        glUseProgram(renderstate.shaders.capsule); check_error("binding renderstate.shaders.capsule");
+        set_uniform(renderstate.shaders.capsule, "aspect", renderstate.viewport.aspect);
+        set_uniform(renderstate.shaders.capsule, "offset", c.pos);
+        set_uniform(renderstate.shaders.capsule, "rotation", 0);
+        set_uniform(renderstate.shaders.capsule, "scale", 1);
+        draw_array(vbo_tri);
 
     }
 }

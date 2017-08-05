@@ -44,8 +44,8 @@ void control(Entity& entity, const Input& input, Controller c)
 
 void spawn_capsule(FliffCapsule& capsule)
 {
-    capsule.pos.x = -0.1;
-    capsule.pos.y = -0.1;
+    capsule.pos.x = -0.2;
+    capsule.pos.y = -0.2;
     capsule.cost = 10;
     capsule.active = true;
     capsule.triggered = false;
