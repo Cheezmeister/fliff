@@ -56,30 +56,32 @@ bool collide(const Player& player, const FliffCapsule& capsule)
     return length(player.pos - capsule.pos) < 0.20;
 }
 
-void spawn_nugget(FliffNugget& nugget)
+void spawn_nugget(FliffNugget& nugget, bml::Vec pos)
 {
     nugget.active = true;
-    nugget.pos.x = bml::normrand();
-    nugget.pos.y = bml::normrand();
-    nugget.vel.x = bml::normrand();
-    nugget.vel.y = bml::normrand();
+    nugget.pos = pos;
+    nugget.vel.x = 0; //bml::normrand() * 0.01;
+    nugget.vel.y = 0; //bml::normrand() * 0.01;
     nugget.amount = rand() % 10;
 }
 
 void hatch_capsule(GameState& state, FliffCapsule& capsule)
 {
     capsule.active = false;
-    if (bml::normrand() > 0) return; // SCAM!
+    if (bml::normrand() > 1) return; // SCAM!
 
-    int nuggetcount = rand() % 10;
+    int nuggetcount = 10;
+    /* int nuggetcount = rand() % 10; */
+
 
     for (int i = 0; i < nuggetcount; ++i)
     {
         for (int j = 0; j < MAX_NUGGETS; ++j)
         {
-            FliffNugget n = state.nuggets[j];
+            FliffNugget& n = state.nuggets[j];
             if (n.active) continue;
-            spawn_nugget(n);
+            DEBUGVAR(capsule.pos);
+            spawn_nugget(n, capsule.pos);
         }
     }
 
@@ -104,7 +106,7 @@ void update(GameState& state, const Input& input)
                 hatch_capsule(state, capsule);
             }
         }
-        else if (bml::normrand() > 0.99)
+        else if (bml::normrand() > 0.9)
         {
             spawn_capsule(capsule);
         }

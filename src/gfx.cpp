@@ -101,6 +101,7 @@ typedef struct _RenderState {
     struct _Shaders {
         GLuint player;
         GLuint capsule;
+        GLuint nugget;
         GLuint meter;
 
         /* GLuint post_blur; */
@@ -160,6 +161,12 @@ void set_uniform(GLuint shader, const char* name, float x, float y)
 {
     GLuint loc = glGetUniformLocation(shader, name);
     glUniform2f(loc, x, y);
+    check_error(string("Setting " )+ name);
+}
+void set_uniform(GLuint shader, const char* name, float x, float y, float z)
+{
+    GLuint loc = glGetUniformLocation(shader, name);
+    glUniform3f(loc, x, y, z);
     check_error(string("Setting " )+ name);
 }
 void set_uniform(GLuint shader, const char* name, const Vec& v)
@@ -295,9 +302,16 @@ void init()
                     );
     check_error("Compiling dot.fragment.glsl");
 
+    GLuint fs_solid = arcsynthesis::CreateShader(
+                          GL_FRAGMENT_SHADER, GLSL_VERSION
+#include "solid.fragment.glsl"
+                      );
+    check_error("Compiling solid.fragment.glsl");
+
     // Init shaders
     renderstate.shaders.player = make_shader(vs_affine, fs_dot);
     renderstate.shaders.capsule = make_shader(vs_affine, fs_pulse);
+    renderstate.shaders.nugget = make_shader(vs_affine, fs_solid);
     /* reticle_shader = make_shader(vs_noop, fs_dot); */
 
     // Misc setup
@@ -333,6 +347,24 @@ void render(GameState& state, u32 ticks)
         set_uniform(renderstate.shaders.capsule, "ticks", ticks);
         draw_array(vbo_quad, GL_QUADS);
     }
+
+    for (int i = 0; i < MAX_NUGGETS; ++i)
+    {
+        FliffNugget& n = state.nuggets[i];
+        DEBUGVAR(n.pos);
+        if (!n.active) continue;
+        glUseProgram(renderstate.shaders.nugget);
+        check_error("binding renderstate.shaders.nugget");
+        set_uniform(renderstate.shaders.nugget, "aspect", renderstate.viewport.aspect);
+        set_uniform(renderstate.shaders.nugget, "offset", n.pos);
+        set_uniform(renderstate.shaders.nugget, "rotation", ticks / 100.0);
+        set_uniform(renderstate.shaders.nugget, "scale", 1);
+        set_uniform(renderstate.shaders.nugget, "ticks", ticks);
+
+        set_uniform(renderstate.shaders.nugget, "hsv", n.amount / 3.0 / 10.0, 1.0, 0.5);
+        draw_array(vbo_quad, GL_QUADS);
+    }
+
 
 }
 }
