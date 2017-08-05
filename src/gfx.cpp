@@ -317,8 +317,8 @@ namespace gfx
         set_uniform(renderstate.shaders.player, "rotation", state.player.rotation);
         /* set_uniform(renderstate.shaders.player, "ticks", ticks); */
         /* set_uniform(renderstate.shaders.player, "green", state.player.mode * 0.25); */
-        set_uniform(renderstate.shaders.player, "scale", 0.2 * state.player.scale);
-				draw_array(vbo, 3, GL_TRIANGLES);
+        set_uniform(renderstate.shaders.player, "scale", 10);
+        draw_array(reticle_vbo, GL_QUADS);
 
         /* // Render reticle, drawing from VBO struct */
         /* glUseProgram(reticle_shader); check_error("binding shader"); */
