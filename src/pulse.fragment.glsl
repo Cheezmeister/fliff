@@ -1,10 +1,10 @@
 #include "common.glsl"
 STRINGIFY(
 
-varying vec4 glPos;
-varying vec2 adjusted_offset;
+    varying vec4 glPos;
+    varying vec2 adjusted_offset;
 
-uniform float ticks;
+    uniform float ticks;
 
 void main() {
     float d = distance(vec2(glPos), adjusted_offset);

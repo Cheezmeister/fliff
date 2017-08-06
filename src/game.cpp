@@ -139,18 +139,18 @@ void update(GameState& state, const Input& input)
 
     }
 
-    for (int i = 0; i < MAX_NUGGETS; ++i) 
+    for (int i = 0; i < MAX_NUGGETS; ++i)
     {
-      FliffNugget& nugget = state.nuggets[i];
-      if (!nugget.active) continue;
-      nugget.pos += nugget.vel;
-      bounce_in_bounds(nugget);
+        FliffNugget& nugget = state.nuggets[i];
+        if (!nugget.active) continue;
+        nugget.pos += nugget.vel;
+        bounce_in_bounds(nugget);
 
-      if (collide(state.player, nugget))
-      {
-          state.player.fliff += nugget.amount;
-          nugget.active = false;
-      }
+        if (collide(state.player, nugget))
+        {
+            state.player.fliff += nugget.amount;
+            nugget.active = false;
+        }
     }
 
 }

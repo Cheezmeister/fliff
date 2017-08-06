@@ -284,6 +284,12 @@ void init()
                      );
     check_error("Compiling noop.vertex.glsl");
 
+    GLuint vs_topbar = arcsynthesis::CreateShader(
+                           GL_VERTEX_SHADER, GLSL_VERSION
+#include "topbar.vertex.glsl"
+                       );
+    check_error("Compiling affine.vertex.glsl");
+
     GLuint vs_affine = arcsynthesis::CreateShader(
                            GL_VERTEX_SHADER, GLSL_VERSION
 #include "affine.vertex.glsl"
@@ -308,10 +314,17 @@ void init()
                       );
     check_error("Compiling solid.fragment.glsl");
 
+    GLuint fs_meter = arcsynthesis::CreateShader(
+                          GL_FRAGMENT_SHADER, GLSL_VERSION
+#include "meter.fragment.glsl"
+                      );
+    check_error("Compiling solid.fragment.glsl");
+
     // Init shaders
     renderstate.shaders.player = make_shader(vs_affine, fs_dot);
     renderstate.shaders.capsule = make_shader(vs_affine, fs_pulse);
     renderstate.shaders.nugget = make_shader(vs_affine, fs_solid);
+    renderstate.shaders.meter = make_shader(vs_topbar, fs_meter);
     /* reticle_shader = make_shader(vs_noop, fs_dot); */
 
     // Misc setup
@@ -364,6 +377,12 @@ void render(GameState& state, u32 ticks)
         set_uniform(renderstate.shaders.nugget, "hsv", n.amount / 3.0 / 10.0, 1.0, 0.5);
         draw_array(vbo_tri);
     }
+
+    glUseProgram(renderstate.shaders.meter);
+    check_error("binding renderstate.shaders.meter");
+    set_uniform(renderstate.shaders.meter, "hsv", 0.7, 1.0, 0.5);
+    set_uniform(renderstate.shaders.meter, "metervalue", state.player.fliff);
+    draw_array(vbo_quad, GL_QUADS);
 
 
 }
