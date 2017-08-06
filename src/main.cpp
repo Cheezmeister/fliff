@@ -116,6 +116,13 @@ Input handle_input()
     ret.axes.y3 = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTY) / (float)32767;
     ret.axes.y4 = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_RIGHTY) / (float)32767;
 
+#define DEADZONE(x) if (abs(x) < 0.15) x = 0
+    DEADZONE(ret.axes.x3);
+    DEADZONE(ret.axes.x4);
+    DEADZONE(ret.axes.y3);
+    DEADZONE(ret.axes.y4);
+#undef DEADZONE
+
     // Poll gamepad buttons
     ret.held.aux = SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_RIGHTSHOULDER);
 
