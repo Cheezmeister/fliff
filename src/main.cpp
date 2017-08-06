@@ -127,9 +127,7 @@ void enter_main_loop()
 {
 
     gfx::init();
-    game::init();
-
-    GameState state = {0};
+    GameState state = game::init();
 
     while (true)
     {

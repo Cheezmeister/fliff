@@ -13,8 +13,11 @@ typedef enum _Controller {
     LATERAL,
 } Controller;
 
-void init()
+GameState init()
 {
+  GameState state = {0};
+  state.player.fliff = 10;
+  return state;
 }
 
 void resize(GameState& state, const Input& input)
@@ -66,7 +69,7 @@ void spawn_capsule(FliffCapsule& capsule)
     capsule.active = true;
     capsule.pos.x = bml::normrand();
     capsule.pos.y = bml::normrand();
-    capsule.cost = rand() % 20;
+    capsule.cost = rand() % 10;
     capsule.triggered = false;
 }
 
@@ -94,8 +97,7 @@ void hatch_capsule(GameState& state, FliffCapsule& capsule)
     capsule.active = false;
     if (bml::normrand() > 1) return; // SCAM!
 
-    int nuggetcount = 10;
-    /* int nuggetcount = rand() % 10; */
+    int nuggetcount = rand() % 10;
 
 
     for (int i = 0; i < nuggetcount; ++i)
@@ -126,9 +128,24 @@ void update(GameState& state, const Input& input)
         FliffCapsule& capsule = state.capsules[i];
         if (capsule.active)
         {
-            if (collide(state.player, capsule))
+            if (capsule.triggered)
             {
+              if (--capsule.fuse <= 0)
+              {
                 hatch_capsule(state, capsule);
+              }
+              if (collide(state.player, capsule))
+              {
+                bml::Vec axis = capsule.pos - state.player.pos;
+                /* bml::Vec projection = bml::project(state.player.vel, axis); */
+                state.player.vel += (0.02 / length(axis) * -axis);
+              }
+            }
+            else if (collide(state.player, capsule))
+            {
+                // hatch_capsule(state, capsule);
+                capsule.triggered = true;
+                capsule.fuse = 60;
                 state.player.fliff -= capsule.cost;
             }
         }
@@ -139,6 +156,7 @@ void update(GameState& state, const Input& input)
 
     }
 
+    // Nuggets
     for (int i = 0; i < MAX_NUGGETS; ++i)
     {
         FliffNugget& nugget = state.nuggets[i];

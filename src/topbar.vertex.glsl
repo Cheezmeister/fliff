@@ -3,8 +3,8 @@
 #include "common.glsl"
 STRINGIFY(
 
-    attribute vec4 inPos;
-    varying vec4 glPos;
+attribute vec4 inPos;
+varying vec4 glPos;
 
 void main() {
     // hax

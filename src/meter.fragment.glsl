@@ -1,9 +1,9 @@
 #include "common.glsl"
 STRINGIFY(
 
-    varying vec4 glPos;
+varying vec4 glPos;
 
-    uniform float metervalue;
+uniform float metervalue;
 
 void main() {
     vec3 level1 = vec3(0, 255, 0);

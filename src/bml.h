@@ -41,6 +41,11 @@ static float cross(const Vec& lhs, const Vec& rhs)
     return lhs.x * rhs.y - rhs.x * lhs.y;
 }
 
+static float dot(const Vec& lhs, const Vec& rhs)
+{
+  return lhs.x * rhs.x + lhs.y * rhs.y;
+}
+
 static float length(const Vec& vec)
 {
     return sqrt(vec.x*vec.x + vec.y*vec.y);
@@ -91,6 +96,11 @@ static Vec operator *(const Vec& lhs, float rhs)
 {
     Vec ret = {lhs.x * rhs, lhs.y * rhs};
     return ret;
+}
+
+static Vec project(const Vec& lhs, const Vec& rhs)
+{
+  return (dot(lhs, rhs) / dot(rhs, rhs)) * rhs;
 }
 
 static std::ostream& operator<<(std::ostream& lhs, const Vec& rhs)
@@ -177,6 +187,7 @@ typedef struct _FliffNugget : public Entity {
 typedef struct _FliffCapsule : public Entity {
     Fliff cost;
     bool triggered;
+    int fuse;
 } FliffCapsule;
 
 typedef struct _GameState {
@@ -205,6 +216,6 @@ void resize(int width, int height);
 
 namespace game
 {
-void init();
+GameState init();
 void update(GameState& state, const Input& input);
 }

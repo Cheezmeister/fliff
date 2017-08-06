@@ -349,19 +349,24 @@ void render(GameState& state, u32 ticks)
     set_uniform(renderstate.shaders.player, "ticks", ticks);
     draw_array(vbo_quad, GL_QUADS);
 
-    FliffCapsule& c = state.capsules[0];
-    if (c.active)
+    for (int i = 0; i < MAX_CAPSULES; ++i)
     {
+      FliffCapsule& c = state.capsules[i];
+      if (c.active)
+      {
         glUseProgram(renderstate.shaders.capsule);
         check_error("binding renderstate.shaders.capsule");
         set_uniform(renderstate.shaders.capsule, "aspect", renderstate.viewport.aspect);
         set_uniform(renderstate.shaders.capsule, "offset", c.pos);
         set_uniform(renderstate.shaders.capsule, "rotation", 0);
         set_uniform(renderstate.shaders.capsule, "scale", 1);
+        set_uniform(renderstate.shaders.capsule, "triggered", c.triggered ? 1 : 0);
+        set_uniform(renderstate.shaders.capsule, "fuse", (float)c.fuse);
         set_uniform(renderstate.shaders.capsule, "ticks", ticks);
         draw_array(vbo_quad, GL_QUADS);
-    }
+      }
 
+    }
     for (int i = 0; i < MAX_NUGGETS; ++i)
     {
         FliffNugget& n = state.nuggets[i];
