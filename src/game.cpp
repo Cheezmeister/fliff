@@ -42,13 +42,37 @@ void control(Entity& entity, const Input& input, Controller c)
     }
 }
 
+void bounce_in_bounds(Entity& entity)
+{
+    float right = 1;
+    float left = -1;
+    float top = 1;
+    float bottom = -1;
+
+    if (entity.pos.x > right) entity.vel.x = -entity.vel.x;
+    if (entity.pos.x < left) entity.vel.x = -entity.vel.x;
+
+    if (entity.pos.y > top) entity.vel.y = -entity.vel.y;
+    if (entity.pos.y < bottom) entity.vel.y = -entity.vel.y;
+}
+
+/* void move(Entity& entity) */
+/* { */
+/*     entity.pos += entity.vel; */
+/* } */
+
 void spawn_capsule(FliffCapsule& capsule)
 {
     capsule.active = true;
     capsule.pos.x = bml::normrand();
     capsule.pos.y = bml::normrand();
-    capsule.cost = 10;
+    capsule.cost = rand() % 20;
     capsule.triggered = false;
+}
+
+bool collide(const Player& player, const FliffNugget& nug)
+{
+    return length(player.pos - nug.pos) < 0.10;
 }
 
 bool collide(const Player& player, const FliffCapsule& capsule)
@@ -60,8 +84,8 @@ void spawn_nugget(FliffNugget& nugget, bml::Vec pos)
 {
     nugget.active = true;
     nugget.pos = pos;
-    nugget.vel.x = 0; //bml::normrand() * 0.01;
-    nugget.vel.y = 0; //bml::normrand() * 0.01;
+    nugget.vel.x = 0.01 * bml::normrand();
+    nugget.vel.y = 0.01 * bml::normrand();
     nugget.amount = rand() % 10;
 }
 
@@ -80,7 +104,6 @@ void hatch_capsule(GameState& state, FliffCapsule& capsule)
         {
             FliffNugget& n = state.nuggets[j];
             if (n.active) continue;
-            DEBUGVAR(capsule.pos);
             spawn_nugget(n, capsule.pos);
         }
     }
@@ -95,8 +118,10 @@ void update(GameState& state, const Input& input)
     }
 
     control(state.player, input, LATERAL);
+    bounce_in_bounds(state.player);
 
-    for (int i = 0; i < 1; ++i)
+    // Capsules
+    for (int i = 0; i < MAX_CAPSULES; ++i)
     {
         FliffCapsule& capsule = state.capsules[i];
         if (capsule.active)
@@ -104,6 +129,7 @@ void update(GameState& state, const Input& input)
             if (collide(state.player, capsule))
             {
                 hatch_capsule(state, capsule);
+                state.player.fliff -= capsule.cost;
             }
         }
         else if (bml::normrand() > 0.9)
@@ -111,6 +137,20 @@ void update(GameState& state, const Input& input)
             spawn_capsule(capsule);
         }
 
+    }
+
+    for (int i = 0; i < MAX_NUGGETS; ++i) 
+    {
+      FliffNugget& nugget = state.nuggets[i];
+      if (!nugget.active) continue;
+      nugget.pos += nugget.vel;
+      bounce_in_bounds(nugget);
+
+      if (collide(state.player, nugget))
+      {
+          state.player.fliff += nugget.amount;
+          nugget.active = false;
+      }
     }
 
 }

@@ -1,0 +1,2 @@
+const int VIEWPORT_WIDTH = 800;
+const int VIEWPORT_HEIGHT = 600;

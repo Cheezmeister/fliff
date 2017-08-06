@@ -55,6 +55,7 @@ Input handle_input()
     {
         if (event.type == SDL_QUIT) ret.quit = true;
         if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE) ret.quit = true;
+        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q) ret.quit = true;
 
         // Window resize
         if (event.type == SDL_WINDOWEVENT)
