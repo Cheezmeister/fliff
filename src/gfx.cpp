@@ -358,7 +358,7 @@ void render(GameState& state, u32 ticks)
         set_uniform(renderstate.shaders.nugget, "aspect", renderstate.viewport.aspect);
         set_uniform(renderstate.shaders.nugget, "offset", n.pos);
         set_uniform(renderstate.shaders.nugget, "rotation", ticks / 400.0);
-        set_uniform(renderstate.shaders.nugget, "scale", 0.01);
+        set_uniform(renderstate.shaders.nugget, "scale", 0.01 * n.amount);
         set_uniform(renderstate.shaders.nugget, "ticks", ticks);
 
         set_uniform(renderstate.shaders.nugget, "hsv", n.amount / 3.0 / 10.0, 1.0, 0.5);
