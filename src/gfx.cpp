@@ -386,6 +386,7 @@ void render(GameState& state, u32 ticks)
     glUseProgram(renderstate.shaders.meter);
     check_error("binding renderstate.shaders.meter");
     set_uniform(renderstate.shaders.meter, "hsv", 0.7, 1.0, 0.5);
+    set_uniform(renderstate.shaders.meter, "ticks", ticks);
     set_uniform(renderstate.shaders.meter, "metervalue", state.player.fliff);
     draw_array(vbo_quad, GL_QUADS);
 

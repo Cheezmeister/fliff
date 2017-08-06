@@ -4,6 +4,7 @@ STRINGIFY(
 varying vec4 glPos;
 
 uniform float metervalue;
+uniform float ticks;
 
 void main() {
     vec3 colors[10];
@@ -30,7 +31,7 @@ void main() {
     }
     else
     {
-        gl_FragColor = vec4(color, 1);
+        gl_FragColor = vec4(color * (1 - beat(ticks) / 3), 1);
     }
 }
 

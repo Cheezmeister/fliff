@@ -9,10 +9,11 @@ STRINGIFY(
 void main() {
     float d = distance(vec2(glPos), adjusted_offset);
     float t = 1.0 - clamp(d * 10, 0, 1);
-    float i = nsin(ticks / 72) * pow(t,  5);
-    float b = t > 0 && (t < 0.04 || t > 0.8) ? 1.0 : 0.0;
-    b *= 1.0 - nsin(ticks / 72);
-    gl_FragColor = vec4(0, i, b, i);
+    float i = beat(ticks) * pow(t,  5);
+    float b = t > 0 && t > 0.8 ? 1.0 : 0;
+    b *= 1.0 - beat(ticks * 2);
+    float b2 = t > 0 && t < 0.05 ? 1 : 0;
+    gl_FragColor = vec4(0, i, b , i);
 }
 
 ) // STRINGIFY

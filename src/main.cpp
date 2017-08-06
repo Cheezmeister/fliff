@@ -129,10 +129,11 @@ void enter_main_loop()
     gfx::init();
     GameState state = game::init();
 
+    u32 startTicks = SDL_GetTicks();
     while (true)
     {
         // Timing
-        u32 ticks = SDL_GetTicks();
+        u32 ticks = SDL_GetTicks() - startTicks;
 
         // Input
         Input input = handle_input();

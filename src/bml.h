@@ -187,6 +187,7 @@ typedef struct _FliffNugget : public Entity {
 typedef struct _FliffCapsule : public Entity {
     Fliff cost;
     bool triggered;
+    bool scam;
     int fuse;
 } FliffCapsule;
 
