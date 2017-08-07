@@ -71,6 +71,8 @@ void spawn_capsule(FliffCapsule& capsule)
     capsule.pos.y = bml::normrand() * 0.75;
     capsule.cost = rand() % 10;
     capsule.triggered = false;
+    capsule.scam = false;
+    capsule.fuse = 0;
 }
 
 bool collide(const Player& player, const FliffNugget& nug)

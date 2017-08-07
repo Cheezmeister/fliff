@@ -27,11 +27,11 @@ void main() {
     float fillvalue = mod(metervalue, 100) / 100.0;
     if (abs(glPos.x) > fillvalue)
     {
-        gl_FragColor = vec4(backcolor, 1);
+        gl_FragColor = vec4(backcolor, 1) * (0.5 + abs(glPos.y - 0.9) * 5 * beat(ticks * 8));
     }
     else
     {
-        gl_FragColor = vec4(color * (1 - beat(ticks) / 3), 1);
+        gl_FragColor = vec4(color * (1 - beat(ticks) / 1.2 * abs(glPos.x) ), 1);
     }
 }
 
