@@ -6,8 +6,8 @@ using namespace std;
 namespace game {
 
 struct _GameParams {
-    float movespeed, rotspeed, drag, modecount, scalesize;
-} params = {   0.01,      0.1,  0.9,         5, 12 };
+    float movespeed,   drag ;
+} params = {   0.015,   0.9 };
 
 typedef enum _Controller {
     LATERAL,
@@ -67,8 +67,8 @@ void bounce_in_bounds(Entity& entity)
 void spawn_capsule(FliffCapsule& capsule)
 {
     capsule.active = true;
-    capsule.pos.x = bml::normrand();
-    capsule.pos.y = bml::normrand();
+    capsule.pos.x = bml::normrand() * 0.75;
+    capsule.pos.y = bml::normrand() * 0.75;
     capsule.cost = rand() % 10;
     capsule.triggered = false;
 }
@@ -95,14 +95,14 @@ void spawn_nugget(FliffNugget& nugget, bml::Vec pos)
 void hatch_capsule(GameState& state, FliffCapsule& capsule)
 {
     capsule.active = false;
-    if (bml::normrand() > 1) 
+    if (bml::normrand() > 0) 
     {
       capsule.scam = true;
       capsule.active = true;
       return; // SCAM!
     }
 
-    int nuggetcount = rand() % 10;
+    int nuggetcount = rand() % 10 + 1;
 
 
     for (int i = 0; i < nuggetcount; ++i)
@@ -137,12 +137,12 @@ void update(GameState& state, const Input& input)
             {
               if (capsule.scam)
               {
-                if (++capsule.fuse)
+                if (++++++++capsule.fuse > 600)
                 {
                   capsule.active = false;
                 }
               }
-              else if (--capsule.fuse <= 0)
+              else if (----capsule.fuse <= 0)
               {
                 hatch_capsule(state, capsule);
               }
@@ -161,7 +161,7 @@ void update(GameState& state, const Input& input)
                 state.player.fliff -= capsule.cost;
             }
         }
-        else if (bml::normrand() > 0.98)
+        else if (bml::normrand() > 0.99)
         {
             spawn_capsule(capsule);
         }

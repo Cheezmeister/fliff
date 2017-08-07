@@ -116,7 +116,7 @@ Input handle_input()
     ret.axes.y3 = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTY) / (float)32767;
     ret.axes.y4 = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_RIGHTY) / (float)32767;
 
-#define DEADZONE(x) if (abs(x) < 0.15) x = 0
+#define DEADZONE(x) if (abs(x) < 0.25) x = 0
     DEADZONE(ret.axes.x3);
     DEADZONE(ret.axes.x4);
     DEADZONE(ret.axes.y3);
@@ -144,7 +144,11 @@ void enter_main_loop()
 
         // Input
         Input input = handle_input();
-        if (input.quit) break;
+        if (input.quit) 
+        {
+          cout << "You'll never get rich with that attitude.";
+          break;
+        }
 
         // Process gameplay
         game::update(state, input);

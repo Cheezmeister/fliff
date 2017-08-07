@@ -336,7 +336,10 @@ void init()
 void render(GameState& state, u32 ticks)
 {
     // Clear
+    /* float c = (sin(ticks) + 1.0) * 0.1 * (ticks > 10000); */
+    /* glClearColor(c, c, c, c); */
     glClear(GL_COLOR_BUFFER_BIT);
+    check_error("clearcolor");
     check_error("clearing screen");
 
     // Render "player", drawing array from raw handle
@@ -379,7 +382,7 @@ void render(GameState& state, u32 ticks)
         set_uniform(renderstate.shaders.nugget, "scale", 0.01 * n.amount);
         set_uniform(renderstate.shaders.nugget, "ticks", ticks);
 
-        set_uniform(renderstate.shaders.nugget, "hsv", n.amount / 3.0 / 10.0, 1.0, 0.5);
+        set_uniform(renderstate.shaders.nugget, "hsv", 1.0 / 3.0, 1.0, 0.5);
         draw_array(vbo_tri);
     }
 
