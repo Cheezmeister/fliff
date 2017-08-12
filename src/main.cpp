@@ -178,6 +178,13 @@ void print_info()
     printf("GLEW version: %s\n", glewGetString(GLEW_VERSION));
 }
 
+// https://stackoverflow.com/a/37152083/118220
+#ifdef _MSVC_LANG
+#ifdef main
+#undef main
+#endif
+#endif
+
 extern "C"
 int main(int argc, char** argv )
 {

@@ -28,7 +28,7 @@ vec2 adjustforaspect(vec2 point, float aspect)
 
 float beat(float ticks)
 {
-  return nsin(radians(360) * 97/2.0 * ticks / 60000.0);
+  return nsin(radians(360.) * 97/2.0 * ticks / 60000.0);
 }
 
 )

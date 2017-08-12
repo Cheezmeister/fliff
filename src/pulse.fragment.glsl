@@ -20,7 +20,7 @@ void main() {
       color = vec3(0, 1, 1) * b * (beat(ticks) < 0.5 ? 1.0 : 0.2);
       bool visible = (t > 0.45 && t < 0.55);
       float theta = acos(dot(vec2(0, 1), normalize(vec2(glPos) - adjusted_offset)));
-      visible = visible && theta > radians(180) * fuse / 600.0;
+      visible = visible && theta > radians(180.) * fuse / 600.0;
       float f = visible ? 1.0 : 0.0;
       color += vec3(0, f, 0);
     }

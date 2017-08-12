@@ -16,7 +16,7 @@ typedef enum _Controller {
 GameState init()
 {
   GameState state = {0};
-  state.player.fliff = 10;
+  state.player.fliff = 30;
   return state;
 }
 

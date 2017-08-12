@@ -2,10 +2,10 @@
 cmake_minimum_required(VERSION 2.6)
 
 #definitions
-set(PROJECT_NAME "Jamboot")
-set(APP_NAME jam)
+set(PROJECT_NAME "Fliff")
+set(APP_NAME fliff)
 set(PROJECT_VERSION 1 0 1)
-set(DESCRIPTION "playtime")
+set(DESCRIPTION "Seattle Indies Game Jam entry")
 set(README README.txt)
 set(LICENSE ${README})
 set(AUTHORS "Brendan Luchen")
@@ -19,10 +19,13 @@ list(GET PROJECT_VERSION 2 CPACK_PACKAGE_VERSION_PATCH )
 set(VERSION_STRING "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
 
 #Be compatible
-cmake_policy(VERSION 2.8)
+cmake_policy(VERSION 3.7)
 
 #declare the project
-project(${PROJECT_NAME})
+project(${PROJECT_NAME} 
+  LANGUAGES "CXX"
+  VERSION ${VERSION_STRING}
+)
 
 #Find required tools (SDL, GL, GLEW)
 find_package(SDL2 REQUIRED)
